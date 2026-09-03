@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Skill Development Management System</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f6f9;
+    color: #222;
+}
+
+header {
+    background: linear-gradient(135deg, #182848, #4b6cb7);
+    color: white;
+    padding: 22px 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 25px;
+}
+
+header p {
+    margin-top: 5px;
+    opacity: .85;
+}
+
+.container {
+    display: flex;
+    min-height: calc(100vh - 90px);
+}
+
+.sidebar {
+    width: 250px;
+    background: #111827;
+    color: white;
+    padding: 20px 0;
+}
+
+.sidebar h2 {
+    padding: 10px 22px 20px;
+    font-size: 18px;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 14px 22px;
+    background: transparent;
+    border: none;
+    color: #d1d5db;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.sidebar button:hover,
+.sidebar button.active {
+    background: #374151;
+    color: white;
+}
+
+.main {
+    flex: 1;
+    padding: 28px;
+    overflow-y: auto;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.page-title {
+    margin-bottom: 20px;
+}
+
+.page-title h2 {
+    color: #182848;
+    margin-bottom: 5px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.card h3 {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.card .number {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 8px;
+    color: #4b6cb7;
+}
+
+.panel {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.07);
+    margin-bottom: 22px;
+}
+
+.panel h3 {
+    margin-bottom: 17px;
+    color: #182848;
+}
+
+form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.form-full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #374151;
+    display: block;
+    margin-bottom: 6px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #4b6cb7;
+}
+
+textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.btn {
+    background: #4b6cb7;
+    color: white;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn:hover {
+    opacity: .9;
+}
+
+.btn-danger {
+    background: #dc2626;
+}
+
+.btn-success {
+    background: #16a34a;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    font-size: 14px;
+}
+
+th {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.badge {
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.badge-green {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-yellow {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-red {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.progress-container {
+    background: #e5e7eb;
+    height: 15px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #4b6cb7;
+    width: 0%;
+    transition: .5s;
+}
+
+.alert {
+    padding: 14px;
+    background: #fff7ed;
+    border-left: 4px solid #f97316;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.gap {
+    padding: 15px;
+    background: #fef2f2;
+    border-left: 5px solid #ef4444;
+    border-radius: 7px;
+    margin-bottom: 10px;
+}
+
+.success {
+    padding: 14px;
+    background: #f0fdf4;
+    border-left: 5px solid #22c55e;
+    border-radius: 7px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.profile-box {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.profile-box small {
+    color: #6b7280;
+}
+
+.profile-box strong {
+    display: block;
+    margin-top: 5px;
+}
+
+.report {
+    line-height: 1.8;
+}
+
+.report h4 {
+    margin-top: 20px;
+    color: #182848;
+}
+
+@media(max-width: 800px) {
+    .sidebar {
+        width: 65px;
+    }
+
+    .sidebar h2 {
+        font-size: 0;
+    }
+
+    .sidebar button {
+        font-size: 0;
+        text-align: center;
+        padding: 18px 5px;
+    }
+
+    .sidebar button::first-letter {
+        font-size: 20px;
+    }
+
+    form {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>Student Skill Development Management System</h1>
+        <p>Skill Profile • Assessment • Certification • Project • Learning Progress</p>
+    </div>
+    <div>
+        <strong>Student Portal</strong>
+    </div>
+</header>
+
+<div class="container">
+
+<aside class="sidebar">
+
+    <h2>MAIN MENU</h2>
+
+    <button class="active" onclick="showPage('dashboard')">
+        🏠 Dashboard
+    </button>
+
+    <button onclick="showPage('profile')">
+        👤 Student Profile
+    </button>
+
+    <button onclick="showPage('skills')">
+        💡 Skill Management
+    </button>
+
+    <button onclick="showPage('assessment')">
+        📝 Assessments
+    </button>
+
+    <button onclick="showPage('certification')">
+        🏆 Certifications
+    </button>
+
+    <button onclick="showPage('projects')">
+        📁 Projects
+    </button>
+
+    <button onclick="showPage('learning')">
+        📚 Learning Activities
+    </button>
+
+    <button onclick="showPage('feedback')">
+        💬 Mentor Feedback
+    </button>
+
+    <button onclick="showPage('gaps')">
+        ⚠️ Competency Gaps
+    </button>
+
+    <button onclick="showPage('reports')">
+        📊 Reports
+    </button>
+
+    <button onclick="showPage('alerts')">
+        🔔 Alerts
+    </button>
+
+</aside>
+
+
+<main class="main">
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="page active">
+
+<div class="page-title">
+    <h2>Dashboard</h2>
+    <p>Overview of student skill development progress</p>
+</div>
+
+<div class="cards">
+
+    <div class="card">
+        <h3>Total Skills</h3>
+        <div class="number" id="skillCount">0</div>
+    </div>
+
+    <div class="card">
+        <h3>Certifications</h3>
+        <div class="number" id="certCount">0</div>
+    </div>
+
+    <div class="card">
+        <h3>Projects</h3>
+        <div class="number" id="projectCount">0</div>
+    </div>
+
+    <div class="card">
+        <h3>Assessments</h3>
+        <div class="number" id="assessmentCount">0</div>
+    </div>
+
+</div>
+
+<div class="panel">
+
+    <h3>Overall Skill Development</h3>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="overallProgress"></div>
+    </div>
+
+    <p style="margin-top:10px;">
+        Current Progress:
+        <strong id="progressText">0%</strong>
+    </p>
+
+</div>
+
+
+<div class="panel">
+
+    <h3>Quick Actions</h3>
+
+    <button class="btn" onclick="showPage('skills')">
+        Add Skill
+    </button>
+
+    <button class="btn" onclick="showPage('assessment')">
+        Take Assessment
+    </button>
+
+    <button class="btn" onclick="showPage('projects')">
+        Add Project
+    </button>
+
+    <button class="btn" onclick="generateReport()">
+        Generate Report
+    </button>
+
+</div>
+
+</section>
+
+
+<!-- PROFILE -->
+
+<section id="profile" class="page">
+
+<div class="page-title">
+    <h2>Student Profile</h2>
+    <p>Manage personal and academic information</p>
+</div>
+
+<div class="panel">
+
+<form onsubmit="saveProfile(event)">
+
+    <div>
+        <label>Student ID</label>
+        <input id="studentId" value="STU001" required>
+    </div>
+
+    <div>
+        <label>Full Name</label>
+        <input id="studentName" value="Arun Kumar" required>
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input id="studentEmail" value="arun@gmail.com" required>
+    </div>
+
+    <div>
+        <label>Department</label>
+        <input id="department" value="Computer Science" required>
+    </div>
+
+    <div>
+        <label>Year</label>
+        <select id="studentYear">
+            <option>1st Year</option>
+            <option>2nd Year</option>
+            <option selected>3rd Year</option>
+            <option>4th Year</option>
+        </select>
+    </div>
+
+    <div class="form-full">
+        <button class="btn">Save Profile</button>
+    </div>
+
+</form>
+
+</div>
+
+<div class="panel">
+
+<h3>Profile Information</h3>
+
+<div class="profile-grid">
+
+<div class="profile-box">
+<small>Student ID</small>
+<strong id="viewId">STU001</strong>
+</div>
+
+<div class="profile-box">
+<small>Name</small>
+<strong id="viewName">Arun Kumar</strong>
+</div>
+
+<div class="profile-box">
+<small>Email</small>
+<strong id="viewEmail">arun@gmail.com</strong>
+</div>
+
+<div class="profile-box">
+<small>Department</small>
+<strong id="viewDepartment">Computer Science</strong>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- SKILLS -->
+
+<section id="skills" class="page">
+
+<div class="page-title">
+    <h2>Skill Management</h2>
+    <p>Add and monitor technical and soft skills</p>
+</div>
+
+<div class="panel">
+
+<h3>Add New Skill</h3>
+
+<form onsubmit="addSkill(event)">
+
+<div>
+<label>Skill Name</label>
+<input id="skillName" placeholder="Example: JavaScript" required>
+</div>
+
+<div>
+<label>Category</label>
+<select id="skillCategory">
+<option>Programming</option>
+<option>Communication</option>
+<option>Database</option>
+<option>Web Development</option>
+<option>Cloud</option>
+<option>Data Science</option>
+<option>Soft Skills</option>
+</select>
+</div>
+
+<div>
+<label>Current Proficiency (%)</label>
+<input type="number" id="skillLevel" min="0" max="100" required>
+</div>
+
+<div>
+<label>Target Level (%)</label>
+<input type="number" id="skillTarget" min="0" max="100" required>
+</div>
+
+<div class="form-full">
+<button class="btn">Add Skill</button>
+</div>
+
+</form>
+
+</div>
+
+
+<div class="panel">
+
+<h3>Skill Profile</h3>
+
+<table>
+
+<thead>
+<tr>
+<th>Skill</th>
+<th>Category</th>
+<th>Current</th>
+<th>Target</th>
+<th>Progress</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="skillTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- ASSESSMENTS -->
+
+<section id="assessment" class="page">
+
+<div class="page-title">
+<h2>Skill Assessments</h2>
+<p>Record test-based and self assessments</p>
+</div>
+
+<div class="panel">
+
+<form onsubmit="addAssessment(event)">
+
+<div>
+<label>Skill</label>
+<input id="assessmentSkill" required>
+</div>
+
+<div>
+<label>Assessment Type</label>
+<select id="assessmentType">
+<option>Technical Test</option>
+<option>Self Assessment</option>
+<option>Online Test</option>
+<option>Mentor Assessment</option>
+</select>
+</div>
+
+<div>
+<label>Score</label>
+<input type="number" id="assessmentScore" min="0" required>
+</div>
+
+<div>
+<label>Total Marks</label>
+<input type="number" id="assessmentTotal" value="100" min="1" required>
+</div>
+
+<div class="form-full">
+<button class="btn">Submit Assessment</button>
+</div>
+
+</form>
+
+</div>
+
+<div class="panel">
+
+<h3>Assessment History</h3>
+
+<table>
+
+<thead>
+<tr>
+<th>Skill</th>
+<th>Type</th>
+<th>Score</th>
+<th>Percentage</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="assessmentTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- CERTIFICATIONS -->
+
+<section id="certification" class="page">
+
+<div class="page-title">
+<h2>Certifications</h2>
+<p>Maintain professional and academic certifications</p>
+</div>
+
+<div class="panel">
+
+<form onsubmit="addCertification(event)">
+
+<div>
+<label>Certification Name</label>
+<input id="certName" placeholder="Example: AWS Cloud Practitioner" required>
+</div>
+
+<div>
+<label>Issuing Organization</label>
+<input id="certOrg" placeholder="Example: Amazon" required>
+</div>
+
+<div>
+<label>Issue Date</label>
+<input type="date" id="certIssue" required>
+</div>
+
+<div>
+<label>Expiry Date</label>
+<input type="date" id="certExpiry">
+</div>
+
+<div class="form-full">
+<button class="btn">Add Certification</button>
+</div>
+
+</form>
+
+</div>
+
+<div class="panel">
+
+<h3>Certification Records</h3>
+
+<table>
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Organization</th>
+<th>Issue Date</th>
+<th>Expiry Date</th>
+</tr>
+</thead>
+
+<tbody id="certTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- PROJECTS -->
+
+<section id="projects" class="page">
+
+<div class="page-title">
+<h2>Project Management</h2>
+<p>Record projects and practical skill development</p>
+</div>
+
+<div class="panel">
+
+<form onsubmit="addProject(event)">
+
+<div>
+<label>Project Title</label>
+<input id="projectTitle" required>
+</div>
+
+<div>
+<label>Technology</label>
+<input id="projectTechnology" placeholder="HTML, CSS, JavaScript">
+</div>
+
+<div class="form-full">
+<label>Description</label>
+<textarea id="projectDescription"></textarea>
+</div>
+
+<div>
+<label>Status</label>
+<select id="projectStatus">
+<option>Not Started</option>
+<option>In Progress</option>
+<option>Completed</option>
+</select>
+</div>
+
+<div class="form-full">
+<button class="btn">Add Project</button>
+</div>
+
+</form>
+
+</div>
+
+<div id="projectList"></div>
+
+</section>
+
+
+<!-- LEARNING -->
+
+<section id="learning" class="page">
+
+<div class="page-title">
+<h2>Learning Activities</h2>
+<p>Track courses, workshops and learning plans</p>
+</div>
+
+<div class="panel">
+
+<form onsubmit="addLearning(event)">
+
+<div>
+<label>Activity Title</label>
+<input id="learningTitle" required>
+</div>
+
+<div>
+<label>Related Skill</label>
+<input id="learningSkill" required>
+</div>
+
+<div>
+<label>Activity Type</label>
+<select id="learningType">
+<option>Course</option>
+<option>Workshop</option>
+<option>Certification</option>
+<option>Practice</option>
+<option>Project</option>
+</select>
+</div>
+
+<div>
+<label>Duration (Hours)</label>
+<input type="number" id="learningHours" min="1">
+</div>
+
+<div class="form-full">
+<button class="btn">Add Learning Activity</button>
+</div>
+
+</form>
+
+</div>
+
+<div id="learningList"></div>
+
+</section>
+
+
+<!-- FEEDBACK -->
+
+<section id="feedback" class="page">
+
+<div class="page-title">
+<h2>Mentor Feedback</h2>
+<p>Record feedback received from mentors</p>
+</div>
+
+<div class="panel">
+
+<form onsubmit="addFeedback(event)">
+
+<div>
+<label>Mentor Name</label>
+<input id="mentorName" required>
+</div>
+
+<div>
+<label>Rating</label>
+<select id="mentorRating">
+<option>5</option>
+<option>4</option>
+<option>3</option>
+<option>2</option>
+<option>1</option>
+</select>
+</div>
+
+<div class="form-full">
+<label>Feedback</label>
+<textarea id="mentorComments" required></textarea>
+</div>
+
+<div class="form-full">
+<button class="btn">Save Feedback</button>
+</div>
+
+</form>
+
+</div>
+
+<div id="feedbackList"></div>
+
+</section>
+
+
+<!-- COMPETENCY GAPS -->
+
+<section id="gaps" class="page">
+
+<div class="page-title">
+<h2>Competency Gap Analysis</h2>
+<p>Identify areas where current skills are below target levels</p>
+</div>
+
+<div class="panel">
+
+<h3>Detected Skill Gaps</h3>
+
+<div id="gapList"></div>
+
+</div>
+
+</section>
+
+
+<!-- REPORTS -->
+
+<section id="reports" class="page">
+
+<div class="page-title">
+<h2>Reports & Analytics</h2>
+<p>Generate student development reports</p>
+</div>
+
+<div class="panel">
+
+<button class="btn" onclick="generateReport()">
+Generate Full Report
+</button>
+
+<button class="btn btn-success" onclick="window.print()">
+Print Report
+</button>
+
+</div>
+
+<div class="panel report" id="reportArea">
+
+<h3>Student Development Report</h3>
+
+<p>
+This report provides a summary of the student's skill development,
+assessments, certifications, projects, learning activities and mentor
+feedback.
+</p>
+
+<h4>Student Information</h4>
+
+<p id="reportStudent"></p>
+
+<h4>Skill Summary</h4>
+
+<div id="reportSkills"></div>
+
+<h4>Assessment Summary</h4>
+
+<div id="reportAssessments"></div>
+
+<h4>Competency Gap Summary</h4>
+
+<div id="reportGaps"></div>
+
+</div>
+
+</section>
+
+
+<!-- ALERTS -->
+
+<section id="alerts" class="page">
+
+<div class="page-title">
+<h2>Alerts & Notifications</h2>
+<p>Important student development notifications</p>
+</div>
+
+<div id="alertList">
+
+<div class="alert">
+<strong>Skill Development:</strong>
+Continue improving your Database skill to reach the target level.
+</div>
+
+<div class="alert">
+<strong>Learning Reminder:</strong>
+Complete your pending learning activities.
+</div>
+
+<div class="alert">
+<strong>Certification:</strong>
+Keep certification expiry dates updated.
+</div>
+
+</div>
+
+</section>
+
+
+</main>
+</div>
+
+
+<script>
+
+/* ============================================================
+   DATA STORAGE
+============================================================ */
+
+let skills = [
+    {
+        name: "C++ Programming",
+        category: "Programming",
+        level: 75,
+        target: 90
+    },
+    {
+        name: "HTML & CSS",
+        category: "Web Development",
+        level: 82,
+        target: 90
+    },
+    {
+        name: "Database",
+        category: "Database",
+        level: 60,
+        target: 85
+    }
+];
+
+let certifications = [];
+
+let projects = [];
+
+let assessments = [];
+
+let learningActivities = [];
+
+let feedback = [];
+
+
+/* ============================================================
+   PAGE NAVIGATION
+============================================================ */
+
+function showPage(pageId) {
+
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+
+    document.getElementById(pageId).classList.add("active");
+
+    document.querySelectorAll(".sidebar button").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    event.target.classList.add("active");
+
+    updateDashboard();
+    updateGaps();
+}
+
+
+/* ============================================================
+   PROFILE
+============================================================ */
+
+function saveProfile(event) {
+
+    event.preventDefault();
+
+    document.getElementById("viewId").innerText =
+        document.getElementById("studentId").value;
+
+    document.getElementById("viewName").innerText =
+        document.getElementById("studentName").value;
+
+    document.getElementById("viewEmail").innerText =
+        document.getElementById("studentEmail").value;
+
+    document.getElementById("viewDepartment").innerText =
+        document.getElementById("department").value;
+
+    alert("Student profile updated successfully.");
+}
+
+
+/* ============================================================
+   SKILLS
+============================================================ */
+
+function addSkill(event) {
+
+    event.preventDefault();
+
+    let name =
+        document.getElementById("skillName").value;
+
+    let category =
+        document.getElementById("skillCategory").value;
+
+    let level =
+        Number(document.getElementById("skillLevel").value);
+
+    let target =
+        Number(document.getElementById("skillTarget").value);
+
+    skills.push({
+        name: name,
+        category: category,
+        level: level,
+        target: target
+    });
+
+    event.target.reset();
+
+    displaySkills();
+    updateDashboard();
+    updateGaps();
+
+    alert("Skill added successfully.");
+}
+
+
+function displaySkills() {
+
+    let table =
+        document.getElementById("skillTable");
+
+    table.innerHTML = "";
+
+    skills.forEach(skill => {
+
+        let status =
+            skill.level >= skill.target
+            ? "Achieved"
+            : "Needs Improvement";
+
+        let badge =
+            skill.level >= skill.target
+            ? "badge-green"
+            : "badge-yellow";
+
+        table.innerHTML += `
+        <tr>
+            <td>${skill.name}</td>
+            <td>${skill.category}</td>
+            <td>${skill.level}%</td>
+            <td>${skill.target}%</td>
+            <td>
+                <div class="progress-container">
+                    <div class="progress-bar"
+                         style="width:${skill.level}%">
+                    </div>
+                </div>
+            </td>
+            <td>
+                <span class="badge ${badge}">
+                    ${status}
+                </span>
+            </td>
+        </tr>
+        `;
+    });
+}
+
+
+/* ============================================================
+   ASSESSMENTS
+============================================================ */
+
+function addAssessment(event) {
+
+    event.preventDefault();
+
+    let skill =
+        document.getElementById("assessmentSkill").value;
+
+    let type =
+        document.getElementById("assessmentType").value;
+
+    let score =
+        Number(document.getElementById("assessmentScore").value);
+
+    let total =
+        Number(document.getElementById("assessmentTotal").value);
+
+    let percentage =
+        ((score / total) * 100).toFixed(2);
+
+    assessments.push({
+        skill: skill,
+        type: type,
+        score: score,
+        total: total,
+        percentage: percentage
+    });
+
+    event.target.reset();
+
+    displayAssessments();
+    updateDashboard();
+
+    alert("Assessment recorded successfully.");
+}
+
+
+function displayAssessments() {
+
+    let table =
+        document.getElementById("assessmentTable");
+
+    table.innerHTML = "";
+
+    assessments.forEach(a => {
+
+        let status =
+            a.percentage >= 50
+            ? "Passed"
+            : "Needs Improvement";
+
+        let badge =
+            a.percentage >= 50
+            ? "badge-green"
+            : "badge-red";
+
+        table.innerHTML += `
+        <tr>
+            <td>${a.skill}</td>
+            <td>${a.type}</td>
+            <td>${a.score}/${a.total}</td>
+            <td>${a.percentage}%</td>
+            <td>
+                <span class="badge ${badge}">
+                    ${status}
+                </span>
+            </td>
+        </tr>
+        `;
+    });
+}
+
+
+/* ============================================================
+   CERTIFICATIONS
+============================================================ */
+
+function addCertification(event) {
+
+    event.preventDefault();
+
+    certifications.push({
+
+        name:
+            document.getElementById("certName").value,
+
+        organization:
+            document.getElementById("certOrg").value,
+
+        issue:
+            document.getElementById("certIssue").value,
+
+        expiry:
+            document.getElementById("certExpiry").value
+
+    });
+
+    event.target.reset();
+
+    displayCertifications();
+    updateDashboard();
+
+    alert("Certification added successfully.");
+}
+
+
+function displayCertifications() {
+
+    let table =
+        document.getElementById("certTable");
+
+    table.innerHTML = "";
+
+    certifications.forEach(c => {
+
+        table.innerHTML += `
+        <tr>
+            <td>${c.name}</td>
+            <td>${c.organization}</td>
+            <td>${c.issue}</td>
+            <td>${c.expiry || "No Expiry"}</td>
+        </tr>
+        `;
+    });
+}
+
+
+/* ============================================================
+   PROJECTS
+============================================================ */
+
+function addProject(event) {
+
+    event.preventDefault();
+
+    projects.push({
+
+        title:
+            document.getElementById("projectTitle").value,
+
+        technology:
+            document.getElementById("projectTechnology").value,
+
+        description:
+            document.getElementById("projectDescription").value,
+
+        status:
+            document.getElementById("projectStatus").value
+
+    });
+
+    event.target.reset();
+
+    displayProjects();
+    updateDashboard();
+
+    alert("Project added successfully.");
+}
+
+
+function displayProjects() {
+
+    let list =
+        document.getElementById("projectList");
+
+    list.innerHTML = "";
+
+    projects.forEach(p => {
+
+        let color =
+            p.status === "Completed"
+            ? "badge-green"
+            : "badge-yellow";
+
+        list.innerHTML += `
+        <div class="panel">
+
+            <h3>${p.title}</h3>
+
+            <p>
+                <strong>Technology:</strong>
+                ${p.technology}
+            </p>
+
+            <p style="margin-top:8px;">
+                ${p.description}
+            </p>
+
+            <p style="margin-top:10px;">
+                <span class="badge ${color}">
+                    ${p.status}
+                </span>
+            </p>
+
+        </div>
+        `;
+    });
+}
+
+
+/* ============================================================
+   LEARNING ACTIVITIES
+============================================================ */
+
+function addLearning(event) {
+
+    event.preventDefault();
+
+    learningActivities.push({
+
+        title:
+            document.getElementById("learningTitle").value,
+
+        skill:
+            document.getElementById("learningSkill").value,
+
+        type:
+            document.getElementById("learningType").value,
+
+        hours:
+            document.getElementById("learningHours").value
+
+    });
+
+    event.target.reset();
+
+    displayLearning();
+
+    alert("Learning activity added.");
+}
+
+
+function displayLearning() {
+
+    let list =
+        document.getElementById("learningList");
+
+    list.innerHTML = "";
+
+    learningActivities.forEach(a => {
+
+        list.innerHTML += `
+        <div class="panel">
+
+            <h3>${a.title}</h3>
+
+            <p>
+                <strong>Skill:</strong>
+                ${a.skill}
+            </p>
+
+            <p>
+                <strong>Type:</strong>
+                ${a.type}
+            </p>
+
+            <p>
+                <strong>Duration:</strong>
+                ${a.hours} hours
+            </p>
+
+        </div>
+        `;
+    });
+}
+
+
+/* ============================================================
+   MENTOR FEEDBACK
+============================================================ */
+
+function addFeedback(event) {
+
+    event.preventDefault();
+
+    feedback.push({
+
+        mentor:
+            document.getElementById("mentorName").value,
+
+        rating:
+            document.getElementById("mentorRating").value,
+
+        comments:
+            document.getElementById("mentorComments").value
+
+    });
+
+    event.target.reset();
+
+    displayFeedback();
+
+    alert("Mentor feedback saved.");
+}
+
+
+function displayFeedback() {
+
+    let list =
+        document.getElementById("feedbackList");
+
+    list.innerHTML = "";
+
+    feedback.forEach(f => {
+
+        list.innerHTML += `
+        <div class="panel">
+
+            <h3>${f.mentor}</h3>
+
+            <p>
+                <strong>Rating:</strong>
+                ${"★".repeat(Number(f.rating))}
+            </p>
+
+            <p style="margin-top:10px;">
+                ${f.comments}
+            </p>
+
+        </div>
+        `;
+    });
+}
+
+
+/* ============================================================
+   COMPETENCY GAP ANALYSIS
+============================================================ */
+
+function updateGaps() {
+
+    let list =
+        document.getElementById("gapList");
+
+    list.innerHTML = "";
+
+    let gaps = 0;
+
+    skills.forEach(skill => {
+
+        if (skill.level < skill.target) {
+
+            gaps++;
+
+            let difference =
+                skill.target - skill.level;
+
+            list.innerHTML += `
+            <div class="gap">
+
+                <strong>${skill.name}</strong>
+
+                <p>
+                    Current Level:
+                    ${skill.level}%
+                </p>
+
+                <p>
+                    Target Level:
+                    ${skill.target}%
+                </p>
+
+                <p>
+                    Competency Gap:
+                    <strong>${difference}%</strong>
+                </p>
+
+                <p style="margin-top:7px;">
+                    Recommendation:
+                    Increase learning and practical activities
+                    related to ${skill.name}.
+                </p>
+
+            </div>
+            `;
+        }
+    });
+
+    if (gaps === 0) {
+
+        list.innerHTML = `
+        <div class="success">
+            Excellent! No competency gaps detected.
+        </div>
+        `;
+    }
+}
+
+
+/* ============================================================
+   DASHBOARD
+============================================================ */
+
+function updateDashboard() {
+
+    document.getElementById("skillCount").innerText =
+        skills.length;
+
+    document.getElementById("certCount").innerText =
+        certifications.length;
+
+    document.getElementById("projectCount").innerText =
+        projects.length;
+
+    document.getElementById("assessmentCount").innerText =
+        assessments.length;
+
+    let progress = 0;
+
+    if (skills.length > 0) {
+
+        let total = 0;
+
+        skills.forEach(skill => {
+
+            total += Math.min(
+                (skill.level / skill.target) * 100,
+                100
+            );
+
+        });
+
+        progress =
+            Math.round(total / skills.length);
+    }
+
+    document.getElementById("overallProgress").style.width =
+        progress + "%";
+
+    document.getElementById("progressText").innerText =
+        progress + "%";
+}
+
+
+/* ============================================================
+   REPORT GENERATION
+============================================================ */
+
+function generateReport() {
+
+    let name =
+        document.getElementById("studentName").value;
+
+    let id =
+        document.getElementById("studentId").value;
+
+    let department =
+        document.getElementById("department").value;
+
+    document.getElementById("reportStudent").innerHTML = `
+        <strong>Student ID:</strong> ${id}<br>
+        <strong>Name:</strong> ${name}<br>
+        <strong>Department:</strong> ${department}<br>
+        <strong>Total Skills:</strong> ${skills.length}<br>
+        <strong>Certifications:</strong> ${certifications.length}<br>
+        <strong>Projects:</strong> ${projects.length}
+    `;
+
+
+    let skillHTML = "";
+
+    skills.forEach(skill => {
+
+        let gap =
+            Math.max(skill.target - skill.level, 0);
+
+        skillHTML += `
+        <p>
+            <strong>${skill.name}</strong>
+            (${skill.category}) -
+            Current: ${skill.level}%,
+            Target: ${skill.target}%,
+            Gap: ${gap}%
+        </p>
+        `;
+    });
+
+    document.getElementById("reportSkills").innerHTML =
+        skillHTML || "No skill records available.";
+
+
+    let assessmentHTML = "";
+
+    assessments.forEach(a => {
+
+        assessmentHTML += `
+        <p>
+            ${a.skill} -
+            ${a.type} -
+            ${a.percentage}%
+        </p>
+        `;
+    });
+
+    document.getElementById("reportAssessments").innerHTML =
+        assessmentHTML || "No assessments available.";
+
+
+    let gapHTML = "";
+
+    skills.forEach(skill => {
+
+        if (skill.level < skill.target) {
+
+            gapHTML += `
+            <p>
+                ${skill.name}:
+                ${skill.target - skill.level}%
+                improvement required.
+            </p>
+            `;
+        }
+    });
+
+    document.getElementById("reportGaps").innerHTML =
+        gapHTML || "No major competency gaps.";
+
+    showPageWithoutEvent("reports");
+}
+
+
+function showPageWithoutEvent(pageId) {
+
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+
+    document.getElementById(pageId).classList.add("active");
+}
+
+
+/* ============================================================
+   INITIAL LOAD
+============================================================ */
+
+displaySkills();
+displayAssessments();
+displayCertifications();
+displayProjects();
+displayLearning();
+displayFeedback();
+updateDashboard();
+updateGaps();
+
+</script>
+
+</body>
+</html>
